@@ -1,4 +1,4 @@
-version: '2.1'
+version: "3.1"
 services:
   pg-0:
     image: docker.io/bitnami/postgresql-repmgr:11
@@ -17,6 +17,9 @@ services:
       - REPMGR_PARTNER_NODES=pg-1,pg-0
       - REPMGR_NODE_NAME=pg-0
       - REPMGR_NODE_NETWORK_NAME=pg-0
+    networks:
+      - internal
+
   pg-1:
     image: docker.io/bitnami/postgresql-repmgr:11
     ports:
@@ -34,6 +37,9 @@ services:
       - REPMGR_PARTNER_NODES=pg-0,pg-1
       - REPMGR_NODE_NAME=pg-1
       - REPMGR_NODE_NETWORK_NAME=pg-1
+    networks:
+      - internal
+    
   pgpool:
     image: docker.io/bitnami/pgpool:4
     ports:
@@ -53,6 +59,16 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - internal
+      - web
+
+
+networks:
+  internal:
+    external: false
+  web:
+    external: true
 volumes:
   pg_0_data:
     driver: local
